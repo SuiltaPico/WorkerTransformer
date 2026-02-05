@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+input.txt
+.ipynb_checkpoints
+.vscode/
+.idea/

@@ -1,0 +1,89 @@
+Device: cuda
+Sequence Length: 1024
+Worker Interval: 4
+Model Dim: 256, Layers: 4
+Dataset Size: 1003854 tokens, Vocab Size: 65
+Dataset Size: 111540 tokens, Vocab Size: 65
+
+======================================================================
+Model 1: Standard Transformer (Baseline)
+======================================================================
+Params: 3,448,576
+
+==================================================
+Training StdTransformer
+==================================================
+Step 100/2000, Train Loss: 2.5930, Val Loss: 2.3636, Speed: 3.55 steps/s
+Step 200/2000, Train Loss: 2.1515, Val Loss: 2.0534, Speed: 3.42 steps/s
+Step 300/2000, Train Loss: 1.9089, Val Loss: 1.9055, Speed: 3.35 steps/s
+Step 400/2000, Train Loss: 1.7736, Val Loss: 1.7557, Speed: 3.29 steps/s
+Step 500/2000, Train Loss: 1.6758, Val Loss: 1.6510, Speed: 3.27 steps/s
+Step 600/2000, Train Loss: 1.6071, Val Loss: 1.5873, Speed: 3.25 steps/s
+Step 700/2000, Train Loss: 1.5612, Val Loss: 1.5277, Speed: 3.23 steps/s
+Step 800/2000, Train Loss: 1.5175, Val Loss: 1.4871, Speed: 3.22 steps/s
+Step 900/2000, Train Loss: 1.4865, Val Loss: 1.4261, Speed: 3.21 steps/s
+Step 1000/2000, Train Loss: 1.4556, Val Loss: 1.4209, Speed: 3.21 steps/s
+Step 1100/2000, Train Loss: 1.4300, Val Loss: 1.3935, Speed: 3.20 steps/s
+Step 1200/2000, Train Loss: 1.4169, Val Loss: 1.3819, Speed: 3.20 steps/s
+Step 1300/2000, Train Loss: 1.3951, Val Loss: 1.3499, Speed: 3.19 steps/s
+Step 1400/2000, Train Loss: 1.3793, Val Loss: 1.3473, Speed: 3.19 steps/s
+Step 1500/2000, Train Loss: 1.3641, Val Loss: 1.3275, Speed: 3.19 steps/s
+Step 1600/2000, Train Loss: 1.3484, Val Loss: 1.2953, Speed: 3.18 steps/s
+Step 1700/2000, Train Loss: 1.3344, Val Loss: 1.2975, Speed: 3.18 steps/s
+Step 1800/2000, Train Loss: 1.3280, Val Loss: 1.2644, Speed: 3.18 steps/s
+Step 1900/2000, Train Loss: 1.3133, Val Loss: 1.2718, Speed: 3.18 steps/s
+Step 2000/2000, Train Loss: 1.3031, Val Loss: 1.2470, Speed: 3.18 steps/s
+Running Validation...
+Training Finished!
+Final Train Loss: 1.5672
+Final Val Loss:   1.2479
+Avg Speed: 3.17 steps/s
+
+======================================================================
+Model 2: WorkerTransformer (Challenger)
+======================================================================
+Params: 3,452,928
+
+==================================================
+Training WorkerTransformer
+==================================================
+Step 100/2000, Train Loss: 2.5228, Val Loss: 2.2493, Speed: 8.52 steps/s
+Step 200/2000, Train Loss: 2.0814, Val Loss: 2.0205, Speed: 8.27 steps/s
+Step 300/2000, Train Loss: 1.8702, Val Loss: 1.8710, Speed: 8.19 steps/s
+Step 400/2000, Train Loss: 1.7438, Val Loss: 1.7468, Speed: 8.15 steps/s
+Step 500/2000, Train Loss: 1.6694, Val Loss: 1.6873, Speed: 8.12 steps/s
+Step 600/2000, Train Loss: 1.6162, Val Loss: 1.6199, Speed: 8.11 steps/s
+Step 700/2000, Train Loss: 1.5762, Val Loss: 1.5600, Speed: 8.10 steps/s
+Step 800/2000, Train Loss: 1.5531, Val Loss: 1.5133, Speed: 8.09 steps/s
+Step 900/2000, Train Loss: 1.5156, Val Loss: 1.5131, Speed: 8.08 steps/s
+Step 1000/2000, Train Loss: 1.4967, Val Loss: 1.4691, Speed: 8.08 steps/s
+Step 1100/2000, Train Loss: 1.4771, Val Loss: 1.4409, Speed: 8.07 steps/s
+Step 1200/2000, Train Loss: 1.4594, Val Loss: 1.4267, Speed: 8.07 steps/s
+Step 1300/2000, Train Loss: 1.4368, Val Loss: 1.4189, Speed: 8.07 steps/s
+Step 1400/2000, Train Loss: 1.4305, Val Loss: 1.3755, Speed: 8.06 steps/s
+Step 1500/2000, Train Loss: 1.4177, Val Loss: 1.3645, Speed: 8.06 steps/s
+Step 1600/2000, Train Loss: 1.4053, Val Loss: 1.3548, Speed: 8.06 steps/s
+Step 1700/2000, Train Loss: 1.3901, Val Loss: 1.3526, Speed: 8.06 steps/s
+Step 1800/2000, Train Loss: 1.3776, Val Loss: 1.3336, Speed: 8.06 steps/s
+Step 1900/2000, Train Loss: 1.3724, Val Loss: 1.3329, Speed: 8.06 steps/s
+Step 2000/2000, Train Loss: 1.3727, Val Loss: 1.3149, Speed: 8.05 steps/s
+Running Validation...
+Training Finished!
+Final Train Loss: 1.5892
+Final Val Loss:   1.3195
+Avg Speed: 8.03 steps/s
+
+======================================================================
+Final Comparison: Standard vs WorkerTransformer
+======================================================================
+Model                | Params     | Train Loss | Val Loss   | Speed (steps/s) | Speedup   
+-----------------------------------------------------------------------------------------------
+Standard             | 3,448,576  | 1.5672     | 1.2479   | 3.17            | 1.00x
+WorkerTransformer    | 3,452,928  | 1.5892     | 1.3195   | 8.03            | 2.53x
+-----------------------------------------------------------------------------------------------
+
+WorkerTransformer Generation Test:
+Seed: First Citizen:
+Befor
+Generated: e of Camidently sleep, show you will masce upon
+Th

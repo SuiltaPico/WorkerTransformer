@@ -1,0 +1,97 @@
+Device: cuda
+Sequence Length: 1024
+Worker Interval: 4
+Model Dim: 256, Layers: 4
+Dataset Size: 1003854 tokens, Vocab Size: 65
+Dataset Size: 111540 tokens, Vocab Size: 65
+
+======================================================================
+Model 1: Standard Transformer (Baseline)
+======================================================================
+Params: 3,448,576
+
+==================================================
+Training StdTransformer
+==================================================
+Time Limit: 300 seconds
+Time: 28.0s | Step 100, Train Loss: 2.5861, Val Loss: 2.3475, Speed: 3.58 steps/s
+Time: 58.1s | Step 200, Train Loss: 2.1573, Val Loss: 2.0404, Speed: 3.44 steps/s
+Time: 88.9s | Step 300, Train Loss: 1.9153, Val Loss: 1.8681, Speed: 3.38 steps/s
+Time: 120.1s | Step 400, Train Loss: 1.7741, Val Loss: 1.7530, Speed: 3.33 steps/s
+Time: 151.2s | Step 500, Train Loss: 1.6820, Val Loss: 1.6386, Speed: 3.31 steps/s
+Time: 183.3s | Step 600, Train Loss: 1.6173, Val Loss: 1.5764, Speed: 3.27 steps/s
+Time: 215.0s | Step 700, Train Loss: 1.5695, Val Loss: 1.5210, Speed: 3.26 steps/s
+Time: 246.6s | Step 800, Train Loss: 1.5335, Val Loss: 1.4924, Speed: 3.24 steps/s
+Time: 278.5s | Step 900, Train Loss: 1.4918, Val Loss: 1.4662, Speed: 3.23 steps/s
+Time limit reached (300s). Stopping.
+Running Validation...
+Training Finished!
+Final Train Loss: 1.7912
+Final Val Loss:   1.4448
+Avg Speed: 3.22 steps/s
+
+======================================================================
+Model 2: WorkerTransformer (Challenger)
+======================================================================
+Params: 3,452,928
+
+==================================================
+Training WorkerTransformer
+==================================================
+Time Limit: 300 seconds
+Time: 11.8s | Step 100, Train Loss: 2.5274, Val Loss: 2.2668, Speed: 8.50 steps/s
+Time: 24.2s | Step 200, Train Loss: 2.0721, Val Loss: 1.9918, Speed: 8.26 steps/s
+Time: 36.7s | Step 300, Train Loss: 1.8598, Val Loss: 1.8834, Speed: 8.17 steps/s
+Time: 49.2s | Step 400, Train Loss: 1.7454, Val Loss: 1.7562, Speed: 8.13 steps/s
+Time: 61.7s | Step 500, Train Loss: 1.6731, Val Loss: 1.6600, Speed: 8.10 steps/s
+Time: 74.2s | Step 600, Train Loss: 1.6120, Val Loss: 1.6019, Speed: 8.09 steps/s
+Time: 86.6s | Step 700, Train Loss: 1.5694, Val Loss: 1.5540, Speed: 8.08 steps/s
+Time: 99.1s | Step 800, Train Loss: 1.5397, Val Loss: 1.5383, Speed: 8.07 steps/s
+Time: 111.6s | Step 900, Train Loss: 1.5178, Val Loss: 1.4981, Speed: 8.06 steps/s
+Time: 124.1s | Step 1000, Train Loss: 1.4887, Val Loss: 1.4623, Speed: 8.06 steps/s
+Time: 136.6s | Step 1100, Train Loss: 1.4715, Val Loss: 1.4141, Speed: 8.06 steps/s
+Time: 149.0s | Step 1200, Train Loss: 1.4517, Val Loss: 1.4040, Speed: 8.05 steps/s
+Time: 161.5s | Step 1300, Train Loss: 1.4332, Val Loss: 1.3996, Speed: 8.05 steps/s
+Time: 174.0s | Step 1400, Train Loss: 1.4221, Val Loss: 1.3801, Speed: 8.05 steps/s
+Time: 186.4s | Step 1500, Train Loss: 1.4115, Val Loss: 1.3597, Speed: 8.05 steps/s
+Time: 198.9s | Step 1600, Train Loss: 1.3930, Val Loss: 1.3389, Speed: 8.04 steps/s
+Time: 211.4s | Step 1700, Train Loss: 1.3868, Val Loss: 1.3470, Speed: 8.04 steps/s
+Time: 223.9s | Step 1800, Train Loss: 1.3779, Val Loss: 1.3253, Speed: 8.04 steps/s
+Time: 236.3s | Step 1900, Train Loss: 1.3692, Val Loss: 1.3198, Speed: 8.04 steps/s
+Time: 248.8s | Step 2000, Train Loss: 1.3529, Val Loss: 1.3169, Speed: 8.04 steps/s
+Time: 261.3s | Step 2100, Train Loss: 1.3484, Val Loss: 1.3221, Speed: 8.04 steps/s
+Time: 273.7s | Step 2200, Train Loss: 1.3430, Val Loss: 1.3086, Speed: 8.04 steps/s
+Time: 286.2s | Step 2300, Train Loss: 1.3315, Val Loss: 1.2914, Speed: 8.04 steps/s
+Time: 298.6s | Step 2400, Train Loss: 1.3238, Val Loss: 1.3011, Speed: 8.04 steps/s
+Time limit reached (300s). Stopping.
+Running Validation...
+Training Finished!
+Final Train Loss: 1.5421
+Final Val Loss:   1.3019
+Avg Speed: 8.02 steps/s
+
+===============================================================================================
+Final Comparison: Standard vs WorkerTransformer (300s Limit)
+===============================================================================================
+Model                | Params     | Train Loss | Val Loss   | Speed (steps/s) | Speedup   
+-----------------------------------------------------------------------------------------------
+Standard             | 3,448,576  | 1.7912     | 1.4448   | 3.22            | 1.00x
+WorkerTransformer    | 3,452,928  | 1.5421     | 1.3019   | 8.02            | 2.49x
+-----------------------------------------------------------------------------------------------
+
+Loss at Time Checkpoints:
+Time (s)   | Std Val Loss    | Worker Val Loss | Diff      
+------------------------------------------------------------
+60         | 2.0404          | 1.7562          | +0.2842
+120        | 1.8681          | 1.4981          | +0.3700
+180        | 1.6386          | 1.3801          | +0.2585
+240        | 1.5210          | 1.3198          | +0.2012
+300        | 1.4662          | 1.3011          | +0.1651
+
+WorkerTransformer Generation Test:
+Seed: First Citizen:
+Befor
+Generated: e, bound is it your lest.
+
+BRULUS:
+What's then, ex
