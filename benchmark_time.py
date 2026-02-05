@@ -9,7 +9,7 @@ import sys
 import time
 
 # Add current directory to path
-sys.path.append(str(Path(__file__).parent))
+sys.path.append(str(Path.cwd()))
 
 from baseline import StdTransformer
 from model import InplaceWorkerTransformer
@@ -170,7 +170,7 @@ def main():
     print(f"Worker Interval: {worker_interval}")
     print(f"Model Dim: {dim}, Layers: {num_layers}")
     
-    data_path = Path(__file__).parent / "input.txt"
+    data_path = Path.cwd() / "input.txt"
     if not data_path.exists():
         print("Warning: input.txt not found. Using synthetic data.")
         text = "Standard Transformer vs Inplace Worker Transformer. " * 10000
