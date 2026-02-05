@@ -20,14 +20,12 @@ class StdTransformerBlock(nn.Module):
     super().__init__()
     self.dim = dim
     self.num_heads = num_heads
-    assert dim % num_heads == 0, "dim 必须能被 num_heads 整除"
+    assert dim % num_heads == 0, "dim must be divisible by num_heads"
     self.head_dim = dim // num_heads
-    assert self.head_dim % 2 == 0, "RoPE 需要 head_dim 为偶数"
+    assert self.head_dim % 2 == 0, "RoPE requires even head_dim"
 
     self.attn_proj = nn.Linear(dim, dim * 3, bias=False)
     self.out_proj = nn.Linear(dim, dim, bias=False)
-    # Gated Attention (Paper 2505.06708v1)
-    # Elementwise SDPA Output Gating
     self.gate_proj = nn.Linear(dim, dim, bias=False)
 
     self.ln1 = nn.RMSNorm(dim)
@@ -66,11 +64,9 @@ class StdTransformerBlock(nn.Module):
     attn_weights = F.softmax(attn_scores, dim=-1)
     attn_weights = self.dropout(attn_weights)
 
-    context = torch.matmul(attn_weights, v)  # [b,h,t,hd]
+    context = torch.matmul(attn_weights, v)
     context = context.transpose(1, 2).contiguous().view(b, t, d)
     
-    # Gated Attention: Y' = Y * sigmoid(X W_theta)
-    # X is the pre-norm hidden state 'h'
     gate = torch.sigmoid(self.gate_proj(h))
     context = context * gate
     

@@ -1,12 +1,5 @@
 """
 WorkerTransformer Benchmark Script
-
-Compares:
-1. Standard Transformer (Baseline)
-2. WorkerTransformer (Ours)
-
-Goal:
-Verify speedup and convergence on a small-scale character-level dataset.
 """
 import torch
 import torch.nn as nn
@@ -23,12 +16,10 @@ from model import InplaceWorkerTransformer
 
 
 class SimpleTextDataset(Dataset):
-    """Simple Character-level Dataset"""
     def __init__(self, text: str, block_size: int, vocab=None):
         self.block_size = block_size
         
         if vocab is None:
-            # Build vocabulary from text
             chars = sorted(list(set(text)))
             self.char_to_idx = {ch: i for i, ch in enumerate(chars)}
             self.idx_to_char = {i: ch for i, ch in enumerate(chars)}
@@ -36,8 +27,6 @@ class SimpleTextDataset(Dataset):
             self.char_to_idx, self.idx_to_char = vocab
             
         self.vocab_size = len(self.char_to_idx)
-        
-        # Encode text, handling unknown characters if any
         self.data = torch.tensor([self.char_to_idx.get(ch, 0) for ch in text], dtype=torch.long)
         print(f"Dataset Size: {len(self.data)} tokens, Vocab Size: {self.vocab_size}")
         
@@ -50,12 +39,10 @@ class SimpleTextDataset(Dataset):
         return x, y
     
     def decode(self, indices):
-        """Decode indices to string"""
         return ''.join([self.idx_to_char[i.item()] for i in indices])
 
 
 def train_model(model, train_loader, val_loader, max_steps, device, model_name="Model"):
-    """Train a single model for a fixed number of steps"""
     optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
     
     model.train()
@@ -98,11 +85,10 @@ def train_model(model, train_loader, val_loader, max_steps, device, model_name="
                 steps_per_sec = step / elapsed
                 interval_avg = interval_loss / max(interval_batches, 1)
                 
-                # Lightweight Validation
                 model.eval()
                 val_loss_accum = 0.0
                 val_steps = 0
-                max_val_batches = 20  # Check 20 batches
+                max_val_batches = 20
                 with torch.no_grad():
                     for vx, vy in val_loader:
                         vx, vy = vx.to(device), vy.to(device)
@@ -116,7 +102,6 @@ def train_model(model, train_loader, val_loader, max_steps, device, model_name="
                 
                 print(f"Step {step}/{max_steps}, Train Loss: {interval_avg:.4f}, Val Loss: {val_loss_cur:.4f}, Speed: {steps_per_sec:.2f} steps/s")
                 
-                # Reset interval stats
                 interval_loss = 0
                 interval_batches = 0
     
@@ -124,7 +109,6 @@ def train_model(model, train_loader, val_loader, max_steps, device, model_name="
     final_train_loss = total_loss / max(num_batches, 1)
     avg_speed = max_steps / total_time
     
-    # Validation Loop
     print(f"Running Validation...")
     model.eval()
     val_loss = 0
@@ -135,7 +119,7 @@ def train_model(model, train_loader, val_loader, max_steps, device, model_name="
             _, loss = model(x, y)
             val_loss += loss.item()
             val_batches += 1
-            if val_batches >= 50: # Limit validation batches for speed
+            if val_batches >= 50:
                 break
     
     final_val_loss = val_loss / max(val_batches, 1)
@@ -149,9 +133,8 @@ def train_model(model, train_loader, val_loader, max_steps, device, model_name="
 
 
 def main():
-    # Hyperparameters
     batch_size = 16
-    block_size = 1024  # Long sequence to demonstrate sparse attention benefits
+    block_size = 1024
     dim = 256
     num_heads = 4
     num_layers = 4
@@ -164,7 +147,6 @@ def main():
     print(f"Worker Interval: {worker_interval}")
     print(f"Model Dim: {dim}, Layers: {num_layers}")
     
-    # Load Data
     data_path = Path(__file__).parent / "input.txt"
     if not data_path.exists():
         print("Warning: input.txt not found. Using synthetic data.")
@@ -173,12 +155,10 @@ def main():
         with open(data_path, 'r', encoding='utf-8') as f:
             text = f.read()
     
-    # Split into train/val
     split_idx = int(len(text) * 0.9)
     train_text = text[:split_idx]
     val_text = text[split_idx:]
     
-    # Build shared vocab
     chars = sorted(list(set(text)))
     vocab = ({ch: i for i, ch in enumerate(chars)}, {i: ch for i, ch in enumerate(chars)})
     
@@ -188,7 +168,6 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     
-    # ============ Model 1: Standard Transformer ============
     print("\n" + "="*70)
     print("Model 1: Standard Transformer (Baseline)")
     print("="*70)
@@ -208,11 +187,9 @@ def main():
     
     train_loss1, val_loss1, speed1 = train_model(model1, train_loader, val_loader, max_steps, device, "StdTransformer")
     
-    # Clean up memory
     del model1
     torch.cuda.empty_cache() if device == 'cuda' else None
     
-    # ============ Model 2: WorkerTransformer ============
     print("\n" + "="*70)
     print("Model 2: WorkerTransformer (Challenger)")
     print("="*70)
@@ -233,7 +210,6 @@ def main():
     
     train_loss2, val_loss2, speed2 = train_model(model2, train_loader, val_loader, max_steps, device, "WorkerTransformer")
 
-    # ============ Comparison Report ============
     print("\n" + "="*70)
     print("Final Comparison: Standard vs WorkerTransformer")
     print("="*70)
